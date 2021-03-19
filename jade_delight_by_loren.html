@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Jade Delight</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" 
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<script language="javascript">
+
+function MenuItem(name, cost)
+{
+	this.name = name;
+	this.cost=cost;
+}
+
+menuItems = new Array(
+	new MenuItem("Chicken Chop Suey", 4.5),
+	new MenuItem("Sweet and Sour Pork", 6.25),
+	new MenuItem("Shrimp Lo Mein", 5.25),
+	new MenuItem("Moo Shi Chicken", 6.5),
+	new MenuItem("Fried Rice", 2.35)
+);
+
+function makeSelect(name, minRange, maxRange)
+{
+	var t= "";
+	t = "<select name='" + name + "' size='1'>";
+	for (j=minRange; j<=maxRange; j++)
+	   t += "<option>" + j + "</option>";
+	t+= "</select>"; 
+	return t;
+}
+</script>
+<style>
+	.hidden{
+		display: none;
+	}
+	.error{
+		color:#d20e11;
+		border: solid 1px #d20e11;
+		display: none;
+	}
+</style>
+
+<h1>Jade Delight</h1>
+<form id = 'form' name = "mydat" method = "post" onsubmit=" return validate()">
+
+<p>First Name: <input type="text"  name='fname' /></p>
+<p>Last Name*:  <input type="text"  name='lname' id = 'lname' /></p>
+<div  name = "lastn" id = "errlname" class = "error"> Name is Required</div>
+<p>Street: <input type="text"  name='street' class="hidden" id = "strt" /></p>
+<div  name = "streetn" id = "strtt" class = "error"> Street is Required </div>
+<p>City: <input type="text"  name='city' class="hidden" id = "cty"/></p>
+<div  name = "cityn" id = "citt" class = "error">City is Required </div>
+<p>Phone*: <input type="tel"  name='phone' id = 'phone' /></p>
+<div name = "phonel" id = "erphone" class = "error">Phone is Required</div>
+<p> 
+	<input type="radio"  name="p_or_d" value = "pickup" checked="checked" id = "pick" />Pickup  
+	<input type="radio"  name='p_or_d' value = 'delivery' id = "del"/>
+	Delivery
+	<span id = "deliv"></span>
+	<span> today at : </span>
+	<span id = "dtime"></span>
+</p>
+<table border="0" cellpadding="3">
+  <tr>
+    <th>Select Item</th>
+    <th>Item Name</th>
+    <th>Cost Each</th>
+    <th>Total Cost</th>
+  </tr>
+
+  <script language = "javascript">
+	checker = false;
+	var errcount = 0;
+	var today; 
+	function validate ( ) {
+		err = false;
+		with(document.mydat) {
+			if(lname.value == ""){
+			//	alert(document.getElementById("errlname").value);
+				document.getElementById("errlname").style.display = "inline-block";
+				err = true;
+				errcount++;
+			}
+			if(document.getElementById('phone').value == "") {
+			//	alert(document.getElementById('erphone').value);
+				document.getElementById("erphone").style.display = "inline block";
+				err = true;
+				errcount++;
+			}
+			if( document.getElementById('subtotal').value == "") {
+				document.getElementById('result').style.display = "inline-block";
+				err = true;
+				errcount++;
+			}
+		}	
+		if(checker) {
+			if(document.getElementById('strt').value == ""){
+				document.getElementById("strtt").style.display = "inline-block";
+				errcount++;
+		}       
+			if(document.getElementById('cty').value == ""){
+				document.getElementById("citt").style.display = "inline-block";
+				errcount++;
+			}		        
+		}
+		if(errcount == 0) {
+			var tot = document.getElementById('total').value;	
+			message = " Thank you for your order! Your order will be with you by " + today
+						+ ". The Total Price come to: " + tot;
+			alert(message);
+		}
+		return !err;
+	}
+		var rd = document.getElementById("del");
+		var rp = document.getElementById("pick");
+		rd.addEventListener("click",disp,false);
+		function disp() {
+			var hidden = document.getElementsByClassName('hidden');
+			for( var i = 0; i < hidden.length; i++){
+				hidden[i].style.display = "inline-block";
+			}
+			checker = true;
+		}
+		rp.addEventListener("click", hide, false)
+		function hide() {
+		var hidden = document.getElementsByClassName('hidden');
+		for( var i = 0; i < hidden.length; i++){
+			hidden[i].style.display = "none";
+	    }
+		checker = false;
+	}
+
+		var rd = document.getElementById("del");
+		rd.addEventListener("click",setTime,false);
+		function setTime() {
+		today = new Date();
+		var day = today.getUTCDay();
+		var min = today.getUTCMinutes() + 30;
+		var hour = today.getUTCHours();
+		if(min > 60) {
+			min = min - 60;
+			hour = hour + 1;
+		}
+		if (min < 10 ) {
+			min = "0" + min;
+		}
+		if (hour < 10 ) {
+			hour = "0" + hour;
+		}
+		if (sec < 10 ) {
+			sec = "0" + sec;
+		}
+		var sec = today.getUTCSeconds();
+		today = hour + ':' + min + ':' + sec + ' UTC';
+		//alert(today);
+		//alert(" Your drop off time is " + today);
+	}
+		var rpick = document.getElementById("pick");
+		rpick.addEventListener("click",pickTime, false);
+		function pickTime() {
+		today = new Date();
+		var day = today.getUTCDay();
+		var min = today.getUTCMinutes() + 15;
+		var hour = today.getUTCHours();
+		if(min > 60) {
+			min = min - 60;
+			hour = hour + 1;
+		}
+		if (min < 10 ) {
+			min = "0" + min;
+		}
+		if (hour < 10 ) {
+			hour = "0" + hour;
+		}
+		if (sec < 10 ) {
+			sec = "0" + sec;
+		}
+		var sec = today.getUTCSeconds();
+		today = hour + ':' + min + ':' + sec + ' UTC';
+		//alert(today);
+		
+	}	
+</script>
+
+
+<script language="javascript">
+
+  var s = "";
+  for (i=0; i< menuItems.length; i++)
+  {
+	  s += "<tr><td>";
+	  s += makeSelect("quan" + i, 0, 10);
+	  s += "</td><td>" + menuItems[i].name + "</td>";
+	  s += "<td> $ " + menuItems[i].cost.toFixed(2) + "</td>";
+	  s += "<td>$<input type='text' name='cost'/></td></tr>";
+  }
+  document.writeln(s);
+</script>
+
+
+
+
+</table>
+<p>Subtotal: 
+   $<input type="text"  name='subtotal' id="subtotal" />
+</p>
+<div id = "result" class="error"> At least one item must be ordered</div>
+<p>Mass tax 6.25%:
+  $ <input type="text"  name='tax' id="tax" />
+</p>
+<p>Total: $ <input type="text"  name='total' id="total" />
+</p>
+<div id = "ordered"></div>
+
+<input type = "submit" value = "Submit Order"  />
+
+</form>
+<!-- To Fill in values from any selected object using Jquery  -->
+<script language = "javascript">
+	$(document).ready(function() {
+		$("select").change(function(){
+			index = this.name.substring(4);
+			priceIndex = this.selectedIndex;
+			document.getElementById('ordered').value = index;
+			document.forms[0].cost[index].value = menuItems[index].cost.toFixed(2) * priceIndex;
+			update();
+		})
+	})
+	function update() {
+		total = 0; 
+		subtotal = 0;
+		tsubtotal = 0;
+		tax = 0;
+		ttax = 0;
+		for( i = 0; i < 5; i++) {
+			//alert(document.forms[0].cost[i].value)
+			
+			subtotal = document.forms[0].cost[i].value;
+			tsubtotal = Number(tsubtotal) +  Number(subtotal); 
+			//alert(tsubtotal);
+			tax = document.forms[0].cost[i].value * 0.0625;
+			ttax += tax;
+		}
+		total = tsubtotal - ttax;
+		document.getElementById('subtotal').value = Number(tsubtotal).toFixed(2);
+		document.getElementById('tax').value = Number(ttax).toFixed(2);
+		//alert(document.getElementById('tax').value);
+		document.getElementById('total').value = Number(total).toFixed(2);
+	}
+</script>
+</body>
+</html>
